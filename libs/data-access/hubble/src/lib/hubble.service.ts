@@ -28,7 +28,7 @@ export class HubbleService {
     // 55.234234234 --> "55.23%"
     const formattedLtv = numbro(absoluteLtv).format({
       output: "percent",
-      mantissa: 2
+      mantissa: 1
     });
 
     return { absoluteLtv, formattedLtv };
