@@ -1,3 +1,4 @@
+import { HubbleService } from "@hubble-bots/data-access/hubble";
 import {
   buildPriceNicknameLabel,
   buildPricePresenceActivityOptions
@@ -15,16 +16,67 @@ export class DiscordBotManagerService {
   private readonly logger = new Logger(DiscordBotManagerService.name);
 
   constructor(
-    private readonly cryptoAssetMetaService: CryptoAssetMetaService
+    private readonly cryptoAssetMetaService: CryptoAssetMetaService,
+    private readonly hubbleService: HubbleService
   ) {}
 
   async initializeAllBots() {
+    await this.initializeSystemLtvMonitorBot();
+
     for (const botEntity of coinGeckoTrackingBotEntities) {
-      await this.initializeBotEntity(botEntity);
+      await this.initializeCoinGeckoTrackingBotEntity(botEntity);
     }
   }
 
-  private async initializeBotEntity(botEntity: CoinGeckoTrackingBotEntity) {
+  private async initializeSystemLtvMonitorBot() {
+    this.logger.log("Initializing Discord bot for Hubble Protocol System LTV.");
+
+    const newDiscordClient = new DiscordClient({
+      intents: [Intents.FLAGS.GUILDS]
+    });
+
+    // When the client is ready, immediately fetch the system LTV.
+    newDiscordClient.once("ready", async () => {
+      const hubbleMetricsResponse =
+        await this.hubbleService.fetchCurrentHubbleMetrics();
+
+      const { absoluteLtv, formattedLtv } =
+        this.hubbleService.calculateSystemLTV(hubbleMetricsResponse);
+
+      // Set the bot's nickname and presence for all servers.
+      // eslint-disable-next-line unicorn/no-array-for-each -- not a native array
+      newDiscordClient.guilds.cache.forEach((guild) => {
+        let nicknameLabel = `SysLTV: ${formattedLtv}`;
+
+        if (absoluteLtv >= 0.64) {
+          nicknameLabel += " 🟥";
+        } else if (absoluteLtv < 0.64 && absoluteLtv >= 0.585) {
+          nicknameLabel += " 🟨";
+        } else if (absoluteLtv < 0.585) {
+          nicknameLabel += " 🟩";
+        }
+
+        guild.me.setNickname(nicknameLabel);
+        newDiscordClient.user.setPresence({
+          activities: [
+            {
+              type: "WATCHING",
+              name: `${hubbleMetricsResponse.borrowing.loans.total} loans`
+            }
+          ]
+        });
+
+        this.logger.log(`Initialized System LTV bot with ${formattedLtv} LTV.`);
+      });
+    });
+
+    // Have the bot log in to Discord and start doing things.
+    newDiscordClient.login(process.env.SYSTEM_LTV_BOT_TOKEN ?? "");
+  }
+
+  private async initializeCoinGeckoTrackingBotEntity(
+    botEntity: CoinGeckoTrackingBotEntity
+  ) {
     this.logger.log(`Initializing Discord bot for ${botEntity.assetSymbol}.`);
 
     const newDiscordClient = new DiscordClient({

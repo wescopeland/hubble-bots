@@ -7,7 +7,7 @@ import type { MarketChartResponse } from "./models";
 
 @Injectable()
 export class CoinGeckoService {
-  apiBaseUrl = "https://api.coingecko.com/api/v3/coins";
+  private readonly apiBaseUrl = "https://api.coingecko.com/api/v3/coins";
 
   constructor(private readonly httpService: HttpService) {}
 
