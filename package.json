@@ -3,14 +3,13 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "nx serve",
-    "build": "nx build",
+    "start": "node dist/apps/bots/main.js",
+    "build": "nx build bots --prod",
     "test": "nx test",
     "format": "prettier --write . '**/*.{json,md,js,ts,tsx}'",
     "format:write": "prettier --write . '**/*.{json,md,js,ts,tsx}'",
     "format:check": "prettier --check . '**/*.{json,md,js,ts,tsx}'",
-    "lint": "nx lint",
-    "lint:fix": "nx lint --fix"
+    "lint": "nx lint"
   },
   "private": true,
   "dependencies": {
