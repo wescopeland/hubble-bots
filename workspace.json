@@ -3,6 +3,7 @@
   "projects": {
     "bots": "apps/bots",
     "data-access-coin-gecko": "libs/data-access/coin-gecko",
+    "data-access-hubble": "libs/data-access/hubble",
     "utils-bot-labels": "libs/utils/bot-labels"
   }
 }

@@ -1,4 +1,4 @@
-export interface BotEntity {
+export interface CoinGeckoTrackingBotEntity {
   coinGeckoAssetName: string;
   assetSymbol: string;
   priceDecimalsToShow: number;

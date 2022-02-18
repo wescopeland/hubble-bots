@@ -1,1 +1,1 @@
-export * from "./bot-entity.model";
+export * from "./coin-gecko-tracking-bot-entity.model";

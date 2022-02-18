@@ -1,6 +1,6 @@
-import type { BotEntity } from "./models";
+import type { CoinGeckoTrackingBotEntity } from "./models";
 
-export const botEntities: BotEntity[] = [
+export const coinGeckoTrackingBotEntities: CoinGeckoTrackingBotEntity[] = [
   {
     coinGeckoAssetName: "hubble",
     assetSymbol: "HBB",

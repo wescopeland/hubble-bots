@@ -1,0 +1,23 @@
+{
+  "root": "libs/data-access/hubble",
+  "sourceRoot": "libs/data-access/hubble/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/data-access/hubble/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/data-access/hubble"],
+      "options": {
+        "jestConfig": "libs/data-access/hubble/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

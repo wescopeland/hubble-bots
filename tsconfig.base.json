@@ -18,6 +18,9 @@
       "@hubble-bots/data-access/coin-gecko": [
         "libs/data-access/coin-gecko/src/index.ts"
       ],
+      "@hubble-bots/data-access/hubble": [
+        "libs/data-access/hubble/src/index.ts"
+      ],
       "@hubble-bots/utils/bot-labels": ["libs/utils/bot-labels/src/index.ts"]
     }
   },

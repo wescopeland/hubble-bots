@@ -1,7 +1,7 @@
-import { Injectable } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
-import urlcat from "urlcat";
+import { Injectable } from "@nestjs/common";
 import { lastValueFrom } from "rxjs";
+import urlcat from "urlcat";
 
 import type { MarketChartResponse } from "./models";
 

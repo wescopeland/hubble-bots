@@ -5,9 +5,9 @@ import {
 import { Injectable, Logger } from "@nestjs/common";
 import { Client as DiscordClient, Intents } from "discord.js";
 
-import { botEntities } from "./bot-entities";
+import { coinGeckoTrackingBotEntities } from "./coin-gecko-tracking-bot-entities";
 import { CryptoAssetMetaService } from "./crypto-asset-meta.service";
-import type { BotEntity } from "./models";
+import type { CoinGeckoTrackingBotEntity } from "./models";
 
 @Injectable()
 export class DiscordBotManagerService {
@@ -19,12 +19,12 @@ export class DiscordBotManagerService {
   ) {}
 
   async initializeAllBots() {
-    for (const botEntity of botEntities) {
+    for (const botEntity of coinGeckoTrackingBotEntities) {
       await this.initializeBotEntity(botEntity);
     }
   }
 
-  private async initializeBotEntity(botEntity: BotEntity) {
+  private async initializeBotEntity(botEntity: CoinGeckoTrackingBotEntity) {
     this.logger.log(`Initializing Discord bot for ${botEntity.assetSymbol}.`);
 
     const newDiscordClient = new DiscordClient({
