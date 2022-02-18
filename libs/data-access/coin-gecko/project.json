@@ -1,0 +1,23 @@
+{
+  "root": "libs/data-access/coin-gecko",
+  "sourceRoot": "libs/data-access/coin-gecko/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/data-access/coin-gecko/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/data-access/coin-gecko"],
+      "options": {
+        "jestConfig": "libs/data-access/coin-gecko/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

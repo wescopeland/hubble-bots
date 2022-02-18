@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 
+import { CoinGeckoModule } from '@hubble-bots/data-access/coin-gecko';
+import { CryptoAssetMetaService } from './crypto-asset-meta.service';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CoinGeckoModule } from './shared/integrations/coin-gecko/coin-gecko.module';
 
 @Module({
   imports: [CoinGeckoModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, CryptoAssetMetaService],
 })
 export class AppModule {}

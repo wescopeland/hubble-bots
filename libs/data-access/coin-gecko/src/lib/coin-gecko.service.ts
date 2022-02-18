@@ -11,7 +11,7 @@ export class CoinGeckoService {
 
   constructor(private readonly httpService: HttpService) {}
 
-  async fetchCoinMarketMeta(coinName: string) {
+  async fetchCryptoAssetMarketMeta(coinName: string) {
     const requestUrl = urlcat(this.apiBaseUrl, '/:coinName/market_chart', {
       coinName,
       vs_currency: 'usd',
@@ -23,10 +23,26 @@ export class CoinGeckoService {
       this.httpService.get<MarketChartResponse>(requestUrl)
     );
 
-    return this.parseCoinMetaData(coinGeckoData);
+    return this.parseRetrievedAssetMetaData(coinGeckoData);
   }
 
-  private parseCoinMetaData(marketChartResponse: MarketChartResponse) {
+  private calculatePercentDifference(oldNumber: number, newNumber: number) {
+    let percentDifference = 0;
+
+    if (newNumber > oldNumber) {
+      percentDifference = (newNumber - oldNumber) / oldNumber;
+    }
+
+    if (newNumber < oldNumber) {
+      percentDifference = (oldNumber - newNumber) / oldNumber;
+    }
+
+    return percentDifference;
+  }
+
+  private parseRetrievedAssetMetaData(
+    marketChartResponse: MarketChartResponse
+  ) {
     const { sanitizedPriceData, sanitizedMarketCapData } =
       this.sanitizeCoinGeckoResponseData(
         marketChartResponse.prices,
@@ -55,20 +71,6 @@ export class CoinGeckoService {
       dailyPricePercentDelta,
       dailyMarketCapPercentDelta,
     };
-  }
-
-  private calculatePercentDifference(oldNumber: number, newNumber: number) {
-    let percentDifference = 0;
-
-    if (newNumber > oldNumber) {
-      percentDifference = (newNumber - oldNumber) / oldNumber;
-    }
-
-    if (newNumber < oldNumber) {
-      percentDifference = (oldNumber - newNumber) / oldNumber;
-    }
-
-    return percentDifference;
   }
 
   private sanitizeCoinGeckoResponseData(

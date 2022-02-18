@@ -1,0 +1,23 @@
+{
+  "root": "libs/utils/bot-labels",
+  "sourceRoot": "libs/utils/bot-labels/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/utils/bot-labels/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/utils/bot-labels"],
+      "options": {
+        "jestConfig": "libs/utils/bot-labels/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
