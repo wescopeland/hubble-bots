@@ -9,6 +9,6 @@ export class AppService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    this.discordBotManagerService.initializeHbbBot();
+    this.discordBotManagerService.initializeAllBots();
   }
 }

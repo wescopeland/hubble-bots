@@ -6,5 +6,11 @@ export const botEntities: BotEntity[] = [
     assetSymbol: "HBB",
     priceDecimalsToShow: 3,
     botAccessToken: process.env.HBB_BOT_TOKEN
+  },
+  {
+    coinGeckoAssetName: "usdh",
+    assetSymbol: "USDH",
+    priceDecimalsToShow: 3,
+    botAccessToken: process.env.USDH_BOT_TOKEN
   }
 ];

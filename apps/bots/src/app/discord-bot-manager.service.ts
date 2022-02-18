@@ -2,55 +2,78 @@ import {
   buildPriceNicknameLabel,
   buildPricePresenceActivityOptions
 } from "@hubble-bots/utils/bot-labels";
-import { Injectable } from "@nestjs/common";
-import { Client, Intents } from "discord.js";
+import { Injectable, Logger } from "@nestjs/common";
+import { Client as DiscordClient, Intents } from "discord.js";
 
+import { botEntities } from "./bot-entities";
 import { CryptoAssetMetaService } from "./crypto-asset-meta.service";
+import type { BotEntity } from "./models";
 
 @Injectable()
 export class DiscordBotManagerService {
-  private hbbBotClient: Client | null = null;
+  private discordBotClients: Record<string, DiscordClient | null> = {};
+  private readonly logger = new Logger(DiscordBotManagerService.name);
 
   constructor(
     private readonly cryptoAssetMetaService: CryptoAssetMetaService
   ) {}
 
-  async initializeHbbBot() {
-    this.hbbBotClient = new Client({
+  async initializeAllBots() {
+    for (const botEntity of botEntities) {
+      await this.initializeBotEntity(botEntity);
+    }
+  }
+
+  private async initializeBotEntity(botEntity: BotEntity) {
+    this.logger.log(`Initializing Discord bot for ${botEntity.assetSymbol}.`);
+
+    const newDiscordClient = new DiscordClient({
       intents: [Intents.FLAGS.GUILDS]
     });
 
     // When the client is ready, immediately fetch the asset price.
-    this.hbbBotClient.once("ready", async () => {
-      const hbbResponse =
-        await this.cryptoAssetMetaService.fetchCryptoAssetMarketData("hubble");
+    newDiscordClient.once("ready", async () => {
+      const assetMarketDataResponse =
+        await this.cryptoAssetMetaService.fetchCryptoAssetMarketData(
+          botEntity.coinGeckoAssetName
+        );
 
-      // Set the nickname and presence for all servers this bot is in.
-      if (this.hbbBotClient) {
-        // eslint-disable-next-line unicorn/no-array-for-each -- not a native array
-        this.hbbBotClient.guilds.cache.forEach((guild) => {
-          const name = buildPriceNicknameLabel(
-            "HBB",
-            hbbResponse.currentPrice,
-            {
-              priceChangePercentage: hbbResponse.dailyPricePercentDelta,
-              mantissa: 3
-            }
-          );
+      // Set the bot's nickname and presence for all servers.
+      // eslint-disable-next-line unicorn/no-array-for-each -- not a native array
+      newDiscordClient.guilds.cache.forEach((guild) => {
+        const nicknameLabel = buildPriceNicknameLabel(
+          botEntity.assetSymbol,
+          assetMarketDataResponse.currentPrice,
+          {
+            priceChangePercentage:
+              assetMarketDataResponse.dailyPricePercentDelta,
+            mantissa: botEntity.priceDecimalsToShow
+          }
+        );
 
-          guild.me.setNickname(name);
-          this.hbbBotClient.user.setPresence({
-            activities: [
-              buildPricePresenceActivityOptions(
-                hbbResponse.dailyPricePercentDelta
-              )
-            ]
-          });
+        guild.me.setNickname(nicknameLabel);
+        newDiscordClient.user.setPresence({
+          activities: [
+            buildPricePresenceActivityOptions(
+              assetMarketDataResponse.dailyPricePercentDelta
+            )
+          ]
         });
-      }
+
+        this.logger.log(
+          `Initialized ${
+            botEntity.assetSymbol
+          } bot with ${nicknameLabel} nickname and ${assetMarketDataResponse.dailyPricePercentDelta.toPrecision(
+            2
+          )}% price delta.`
+        );
+      });
     });
 
-    // Be sure the bot is logged in to Discord.
-    this.hbbBotClient.login(process.env.HBB_BOT_TOKEN ?? "");
+    // Have the bot log in to Discord and start doing things.
+    newDiscordClient.login(botEntity.botAccessToken);
+
+    // Store the bot in memory for future use.
+    this.discordBotClients[botEntity.assetSymbol] = newDiscordClient;
   }
 }
