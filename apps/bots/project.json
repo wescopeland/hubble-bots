@@ -20,7 +20,7 @@
           "fileReplacements": [
             {
               "replace": "apps/bots/src/environments/environment.ts",
-              "with": "apps/bots/src/environments/environment.prod.ts"
+              "with": "apps/bots/src/environments/environment.production.ts"
             }
           ]
         }

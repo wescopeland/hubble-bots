@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
-import { CoinGeckoService } from '@hubble-bots/data-access/coin-gecko';
+import { CoinGeckoService } from "@hubble-bots/data-access/coin-gecko";
 
 @Injectable()
 export class CryptoAssetMetaService {

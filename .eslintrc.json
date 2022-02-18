@@ -1,7 +1,7 @@
 {
   "root": true,
   "ignorePatterns": ["**/*"],
-  "plugins": ["@nrwl/nx"],
+  "plugins": ["@nrwl/nx", "simple-import-sort", "import"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -23,8 +23,36 @@
     },
     {
       "files": ["*.ts", "*.tsx"],
-      "extends": ["plugin:@nrwl/nx/typescript"],
-      "rules": {}
+      "extends": [
+        "plugin:@nrwl/nx/typescript",
+        "plugin:sonarjs/recommended",
+        "plugin:unicorn/recommended"
+      ],
+      "rules": {
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-var-requires": "off",
+        "eqeqeq": "warn",
+        "import/first": "error",
+        "import/newline-after-import": "error",
+        "import/no-duplicates": "error",
+        "no-console": "off",
+        "object-shorthand": "error",
+        "simple-import-sort/exports": "error",
+        "simple-import-sort/imports": "error",
+        "sonarjs/no-unused-collection": "off",
+        "unicorn/filename-case": "off",
+        "unicorn/no-array-callback-reference": "off",
+        "unicorn/no-array-for-each": "warn",
+        "unicorn/no-array-reduce": "off",
+        "unicorn/no-null": "off",
+        "unicorn/prefer-module": "off",
+        "unicorn/prefer-node-protocol": "off",
+        "unicorn/prefer-spread": "off",
+        "unicorn/prefer-switch": "off",
+        "unicorn/prevent-abbreviations": "off"
+      }
     },
     {
       "files": ["*.js", "*.jsx"],

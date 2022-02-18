@@ -1,17 +1,15 @@
-import type { ActivitiesOptions } from 'discord.js';
-import * as numbro from 'numbro';
+import type { ActivitiesOptions } from "discord.js";
+import * as numbro from "numbro";
 
 export const buildPricePresenceActivityOptions = (
   priceChangePercentage: number
 ): ActivitiesOptions => {
   const formattedPercentage = numbro(priceChangePercentage).format({
-    output: 'percent',
-    mantissa: 2,
+    output: "percent",
+    mantissa: 2
   });
-
-  console.log({ priceChangePercentage });
 
   const activityName = `24h: ${formattedPercentage}`;
 
-  return { type: 'WATCHING', name: activityName };
+  return { type: "WATCHING", name: activityName };
 };

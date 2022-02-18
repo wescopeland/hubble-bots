@@ -1,1 +1,1 @@
-export * from './market-chart-response.model';
+export * from "./market-chart-response.model";

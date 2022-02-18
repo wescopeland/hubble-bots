@@ -1,22 +1,22 @@
-import { Injectable } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios';
-import urlcat from 'urlcat';
-import { lastValueFrom } from 'rxjs';
+import { Injectable } from "@nestjs/common";
+import { HttpService } from "@nestjs/axios";
+import urlcat from "urlcat";
+import { lastValueFrom } from "rxjs";
 
-import type { MarketChartResponse } from './models';
+import type { MarketChartResponse } from "./models";
 
 @Injectable()
 export class CoinGeckoService {
-  apiBaseUrl = 'https://api.coingecko.com/api/v3/coins';
+  apiBaseUrl = "https://api.coingecko.com/api/v3/coins";
 
   constructor(private readonly httpService: HttpService) {}
 
   async fetchCryptoAssetMarketMeta(coinName: string) {
-    const requestUrl = urlcat(this.apiBaseUrl, '/:coinName/market_chart', {
+    const requestUrl = urlcat(this.apiBaseUrl, "/:coinName/market_chart", {
       coinName,
-      vs_currency: 'usd',
+      vs_currency: "usd",
       days: 1,
-      interval: 'hourly',
+      interval: "hourly"
     });
 
     const { data: coinGeckoData } = await lastValueFrom(
@@ -69,7 +69,7 @@ export class CoinGeckoService {
       currentPrice,
       currentMarketCap,
       dailyPricePercentDelta,
-      dailyMarketCapPercentDelta,
+      dailyMarketCapPercentDelta
     };
   }
 
@@ -86,14 +86,14 @@ export class CoinGeckoService {
     for (const [dateTime, price] of priceDataNodes) {
       sanitizedPriceData.push({
         price,
-        dateTime,
+        dateTime
       });
     }
 
     for (const [dateTime, marketCap] of marketCapDataNodes) {
       sanitizedMarketCapData.push({
         marketCap,
-        dateTime,
+        dateTime
       });
     }
 

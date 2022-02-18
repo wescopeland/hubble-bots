@@ -1,2 +1,2 @@
-export * from './lib/buildPriceNicknameLabel';
-export * from './lib/buildPricePresenceActivityOptions';
+export * from "./lib/buildPriceNicknameLabel";
+export * from "./lib/buildPricePresenceActivityOptions";

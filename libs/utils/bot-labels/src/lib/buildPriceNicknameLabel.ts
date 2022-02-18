@@ -1,4 +1,4 @@
-import * as numbro from 'numbro';
+import * as numbro from "numbro";
 
 export const buildPriceNicknameLabel = (
   assetSymbol: string,
@@ -10,18 +10,18 @@ export const buildPriceNicknameLabel = (
   const decimalsToDisplay = mantissa ?? 2;
 
   const formattedPrice = numbro(givenPrice).formatCurrency({
-    mantissa: decimalsToDisplay,
+    mantissa: decimalsToDisplay
   });
 
   let priceLabel = `${assetSymbol.toUpperCase()}: ${formattedPrice}`;
 
   if (priceChangePercentage !== undefined) {
-    let arrowSymbol = '→';
+    let arrowSymbol = "→";
 
     if (priceChangePercentage < 0) {
-      arrowSymbol = '↘';
+      arrowSymbol = "↘";
     } else if (priceChangePercentage > 0) {
-      arrowSymbol = '↗';
+      arrowSymbol = "↗";
     }
 
     priceLabel += ` ${arrowSymbol}`;
