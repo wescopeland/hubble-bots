@@ -65,7 +65,7 @@ export class DiscordBotManagerService {
             activities: [
               {
                 type: "WATCHING",
-                name: `${hbbStakersCount} stakers`
+                name: `${hbbStakersCount} HBB stakers`
               }
             ]
           });
