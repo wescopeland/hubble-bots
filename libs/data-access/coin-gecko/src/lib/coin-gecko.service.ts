@@ -65,11 +65,19 @@ export class CoinGeckoService {
       currentMarketCap
     );
 
+    let priceDirection: "sideways" | "up" | "down" = "sideways";
+    if (sanitizedPriceData[0].price < currentPrice) {
+      priceDirection = "down";
+    } else if (sanitizedPriceData[0].price > currentPrice) {
+      priceDirection = "up";
+    }
+
     return {
       currentPrice,
       currentMarketCap,
       dailyPricePercentDelta,
-      dailyMarketCapPercentDelta
+      dailyMarketCapPercentDelta,
+      priceDirection
     };
   }
 

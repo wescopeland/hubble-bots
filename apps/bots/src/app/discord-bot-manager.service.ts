@@ -208,8 +208,7 @@ export class DiscordBotManagerService {
             botEntity.assetSymbol,
             assetMarketDataResponse.currentPrice,
             {
-              priceChangePercentage:
-                assetMarketDataResponse.dailyPricePercentDelta,
+              priceDirection: assetMarketDataResponse.priceDirection,
               mantissa: botEntity.priceDecimalsToShow
             }
           );

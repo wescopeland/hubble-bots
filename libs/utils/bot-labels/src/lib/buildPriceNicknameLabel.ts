@@ -3,9 +3,12 @@ import * as numbro from "numbro";
 export const buildPriceNicknameLabel = (
   assetSymbol: string,
   givenPrice: number,
-  options: Partial<{ mantissa: number; priceChangePercentage: number }> = {}
+  options: Partial<{
+    mantissa: number;
+    priceDirection: "up" | "down" | "sideways";
+  }> = {}
 ) => {
-  const { mantissa, priceChangePercentage } = options;
+  const { mantissa, priceDirection } = options;
 
   const decimalsToDisplay = mantissa ?? 2;
 
@@ -15,12 +18,12 @@ export const buildPriceNicknameLabel = (
 
   let priceLabel = `${assetSymbol.toUpperCase()}: ${formattedPrice}`;
 
-  if (priceChangePercentage !== undefined) {
+  if (priceDirection !== undefined) {
     let arrowSymbol = "→";
 
-    if (priceChangePercentage < 0) {
+    if (priceDirection === "down") {
       arrowSymbol = "↘";
-    } else if (priceChangePercentage > 0) {
+    } else if (priceDirection === "up") {
       arrowSymbol = "↗";
     }
 
