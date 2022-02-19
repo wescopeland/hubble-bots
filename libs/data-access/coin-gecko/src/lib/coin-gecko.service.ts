@@ -66,9 +66,9 @@ export class CoinGeckoService {
     );
 
     let priceDirection: "sideways" | "up" | "down" = "sideways";
-    if (sanitizedPriceData[0].price < currentPrice) {
+    if (sanitizedPriceData[0].price > currentPrice) {
       priceDirection = "down";
-    } else if (sanitizedPriceData[0].price > currentPrice) {
+    } else if (sanitizedPriceData[0].price < currentPrice) {
       priceDirection = "up";
     }
 
