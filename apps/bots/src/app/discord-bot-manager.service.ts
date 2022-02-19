@@ -46,34 +46,41 @@ export class DiscordBotManagerService {
       setInterval(async () => {
         this.logger.log("Cycling HBB staked bot.");
 
-        const hubbleMetricsResponse =
-          await this.hubbleService.fetchCurrentHubbleMetrics();
+        try {
+          const hubbleMetricsResponse =
+            await this.hubbleService.fetchCurrentHubbleMetrics();
 
-        const stakedHbbCount = hubbleMetricsResponse.hbb.staked;
-        const hbbStakersCount = hubbleMetricsResponse.hbb.numberOfStakers;
+          const stakedHbbCount = hubbleMetricsResponse.hbb.staked;
+          const hbbStakersCount = hubbleMetricsResponse.hbb.numberOfStakers;
 
-        // Set the bot's nickname and presence for all servers.
-        // eslint-disable-next-line unicorn/no-array-for-each -- not a native array
-        newDiscordClient.guilds.cache.forEach((guild) => {
-          const nicknameLabel = `${numbro(stakedHbbCount).format({
-            mantissa: 0,
-            thousandSeparated: true
-          })} staked`;
+          // Set the bot's nickname and presence for all servers.
+          // eslint-disable-next-line unicorn/no-array-for-each -- not a native array
+          newDiscordClient.guilds.cache.forEach((guild) => {
+            const nicknameLabel = `${numbro(stakedHbbCount).format({
+              mantissa: 0,
+              thousandSeparated: true
+            })} staked`;
 
-          guild.me.setNickname(nicknameLabel);
-          newDiscordClient.user.setPresence({
-            activities: [
-              {
-                type: "WATCHING",
-                name: `${hbbStakersCount} HBB stakers`
-              }
-            ]
+            guild.me.setNickname(nicknameLabel);
+            newDiscordClient.user.setPresence({
+              activities: [
+                {
+                  type: "WATCHING",
+                  name: `${hbbStakersCount} HBB stakers`
+                }
+              ]
+            });
+
+            this.logger.log(
+              `Updated staked HBB bot with ${stakedHbbCount} HBB staked.`
+            );
           });
-
-          this.logger.log(
-            `Updated staked HBB bot with ${stakedHbbCount} HBB staked.`
+        } catch (error) {
+          this.logger.error(
+            "There was a problem cycling the HBB staked bot.",
+            error
           );
-        });
+        }
       }, FIVE_MINUTES);
     });
 
@@ -95,36 +102,43 @@ export class DiscordBotManagerService {
       setInterval(async () => {
         this.logger.log("Cycling USDH stability pool deposits bot.");
 
-        const hubbleMetricsResponse =
-          await this.hubbleService.fetchCurrentHubbleMetrics();
+        try {
+          const hubbleMetricsResponse =
+            await this.hubbleService.fetchCurrentHubbleMetrics();
 
-        const stabilityPoolDepositsValue =
-          hubbleMetricsResponse.usdh.stabilityPool;
+          const stabilityPoolDepositsValue =
+            hubbleMetricsResponse.usdh.stabilityPool;
 
-        // Set the bot's nickname and presence for all servers.
-        // eslint-disable-next-line unicorn/no-array-for-each -- not a native array
-        newDiscordClient.guilds.cache.forEach((guild) => {
-          const nicknameLabel = numbro(
-            stabilityPoolDepositsValue
-          ).formatCurrency({
-            mantissa: 0,
-            thousandSeparated: true
+          // Set the bot's nickname and presence for all servers.
+          // eslint-disable-next-line unicorn/no-array-for-each -- not a native array
+          newDiscordClient.guilds.cache.forEach((guild) => {
+            const nicknameLabel = numbro(
+              stabilityPoolDepositsValue
+            ).formatCurrency({
+              mantissa: 0,
+              thousandSeparated: true
+            });
+
+            guild.me.setNickname(nicknameLabel);
+            newDiscordClient.user.setPresence({
+              activities: [
+                {
+                  type: "WATCHING",
+                  name: "Stability Pool USDH"
+                }
+              ]
+            });
+
+            this.logger.log(
+              `Updated current stability pool USDH deposits bot with ${stabilityPoolDepositsValue} USDH in the pool.`
+            );
           });
-
-          guild.me.setNickname(nicknameLabel);
-          newDiscordClient.user.setPresence({
-            activities: [
-              {
-                type: "WATCHING",
-                name: "Stability Pool USDH"
-              }
-            ]
-          });
-
-          this.logger.log(
-            `Updated current stability pool USDH deposits bot with ${stabilityPoolDepositsValue} USDH in the pool.`
+        } catch (error) {
+          this.logger.error(
+            "There was a problem cycling the USDH stability pool deposits bot.",
+            error
           );
-        });
+        }
       }, FIVE_MINUTES);
     });
 
@@ -144,37 +158,44 @@ export class DiscordBotManagerService {
       setInterval(async () => {
         this.logger.log("Cycling System LTV bot.");
 
-        const hubbleMetricsResponse =
-          await this.hubbleService.fetchCurrentHubbleMetrics();
+        try {
+          const hubbleMetricsResponse =
+            await this.hubbleService.fetchCurrentHubbleMetrics();
 
-        const { absoluteLtv, formattedLtv } =
-          this.hubbleService.calculateSystemLTV(hubbleMetricsResponse);
+          const { absoluteLtv, formattedLtv } =
+            this.hubbleService.calculateSystemLTV(hubbleMetricsResponse);
 
-        // Set the bot's nickname and presence for all servers.
-        // eslint-disable-next-line unicorn/no-array-for-each -- not a native array
-        newDiscordClient.guilds.cache.forEach((guild) => {
-          let nicknameLabel = `SysLTV: ${formattedLtv}`;
+          // Set the bot's nickname and presence for all servers.
+          // eslint-disable-next-line unicorn/no-array-for-each -- not a native array
+          newDiscordClient.guilds.cache.forEach((guild) => {
+            let nicknameLabel = `SysLTV: ${formattedLtv}`;
 
-          if (absoluteLtv >= 0.64) {
-            nicknameLabel += " 🟥";
-          } else if (absoluteLtv < 0.64 && absoluteLtv >= 0.585) {
-            nicknameLabel += " 🟨";
-          } else if (absoluteLtv < 0.585) {
-            nicknameLabel += " 🟩";
-          }
+            if (absoluteLtv >= 0.64) {
+              nicknameLabel += " 🟥";
+            } else if (absoluteLtv < 0.64 && absoluteLtv >= 0.585) {
+              nicknameLabel += " 🟨";
+            } else if (absoluteLtv < 0.585) {
+              nicknameLabel += " 🟩";
+            }
 
-          guild.me.setNickname(nicknameLabel);
-          newDiscordClient.user.setPresence({
-            activities: [
-              {
-                type: "WATCHING",
-                name: `${hubbleMetricsResponse.borrowing.loans.total} loans`
-              }
-            ]
+            guild.me.setNickname(nicknameLabel);
+            newDiscordClient.user.setPresence({
+              activities: [
+                {
+                  type: "WATCHING",
+                  name: `${hubbleMetricsResponse.borrowing.loans.total} loans`
+                }
+              ]
+            });
+
+            this.logger.log(`Updated System LTV bot with ${formattedLtv} LTV.`);
           });
-
-          this.logger.log(`Updated System LTV bot with ${formattedLtv} LTV.`);
-        });
+        } catch (error) {
+          this.logger.error(
+            "There was a problem cycling the System LTV bot.",
+            error
+          );
+        }
       }, FIVE_MINUTES);
     });
 
@@ -196,41 +217,48 @@ export class DiscordBotManagerService {
       setInterval(async () => {
         this.logger.log(`Cycling ${botEntity.assetSymbol} price bot.`);
 
-        const assetMarketDataResponse =
-          await this.cryptoAssetMetaService.fetchCryptoAssetMarketData(
-            botEntity.coinGeckoAssetName
-          );
+        try {
+          const assetMarketDataResponse =
+            await this.cryptoAssetMetaService.fetchCryptoAssetMarketData(
+              botEntity.coinGeckoAssetName
+            );
 
-        // Set the bot's nickname and presence for all servers.
-        // eslint-disable-next-line unicorn/no-array-for-each -- not a native array
-        newDiscordClient.guilds.cache.forEach((guild) => {
-          const nicknameLabel = buildPriceNicknameLabel(
-            botEntity.assetSymbol,
-            assetMarketDataResponse.currentPrice,
-            {
-              priceDirection: assetMarketDataResponse.priceDirection,
-              mantissa: botEntity.priceDecimalsToShow
-            }
-          );
+          // Set the bot's nickname and presence for all servers.
+          // eslint-disable-next-line unicorn/no-array-for-each -- not a native array
+          newDiscordClient.guilds.cache.forEach((guild) => {
+            const nicknameLabel = buildPriceNicknameLabel(
+              botEntity.assetSymbol,
+              assetMarketDataResponse.currentPrice,
+              {
+                priceDirection: assetMarketDataResponse.priceDirection,
+                mantissa: botEntity.priceDecimalsToShow
+              }
+            );
 
-          guild.me.setNickname(nicknameLabel);
-          newDiscordClient.user.setPresence({
-            activities: [
-              buildPricePresenceActivityOptions(
-                assetMarketDataResponse.dailyPricePercentDelta,
-                assetMarketDataResponse.priceDirection
-              )
-            ]
+            guild.me.setNickname(nicknameLabel);
+            newDiscordClient.user.setPresence({
+              activities: [
+                buildPricePresenceActivityOptions(
+                  assetMarketDataResponse.dailyPricePercentDelta,
+                  assetMarketDataResponse.priceDirection
+                )
+              ]
+            });
+
+            this.logger.log(
+              `Updated ${
+                botEntity.assetSymbol
+              } bot with ${nicknameLabel} nickname and ${assetMarketDataResponse.dailyPricePercentDelta.toPrecision(
+                2
+              )}% price delta.`
+            );
           });
-
-          this.logger.log(
-            `Updated ${
-              botEntity.assetSymbol
-            } bot with ${nicknameLabel} nickname and ${assetMarketDataResponse.dailyPricePercentDelta.toPrecision(
-              2
-            )}% price delta.`
+        } catch (error) {
+          this.logger.error(
+            `There was a problem cycling the ${botEntity.assetSymbol} price bot.`,
+            error
           );
-        });
+        }
       }, FIVE_MINUTES);
     });
 
