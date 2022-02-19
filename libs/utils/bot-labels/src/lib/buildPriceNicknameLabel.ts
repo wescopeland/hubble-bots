@@ -17,7 +17,7 @@ export const buildPriceNicknameLabel = (
   });
 
   let priceLabel = `${assetSymbol.toUpperCase()}: ${
-    priceDirection === "down" && "-"
+    priceDirection === "down" ? "-" : ""
   }${formattedPrice}`;
 
   if (priceDirection !== undefined) {
