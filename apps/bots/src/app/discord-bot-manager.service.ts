@@ -217,7 +217,8 @@ export class DiscordBotManagerService {
           newDiscordClient.user.setPresence({
             activities: [
               buildPricePresenceActivityOptions(
-                assetMarketDataResponse.dailyPricePercentDelta
+                assetMarketDataResponse.dailyPricePercentDelta,
+                assetMarketDataResponse.priceDirection
               )
             ]
           });

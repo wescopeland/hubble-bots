@@ -16,9 +16,7 @@ export const buildPriceNicknameLabel = (
     mantissa: decimalsToDisplay
   });
 
-  let priceLabel = `${assetSymbol.toUpperCase()}: ${
-    priceDirection === "down" ? "-" : ""
-  }${formattedPrice}`;
+  let priceLabel = `${assetSymbol.toUpperCase()}: ${formattedPrice}`;
 
   if (priceDirection !== undefined) {
     let arrowSymbol = "→";
