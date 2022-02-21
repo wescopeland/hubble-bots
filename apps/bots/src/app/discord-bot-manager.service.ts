@@ -13,6 +13,17 @@ import type { CoinGeckoTrackingBotEntity } from "./models";
 
 const FIVE_MINUTES = 5 * 60 * 1000;
 
+/**
+ * Creates an interval, but also executes the given function
+ * immediately. This is useful for running the bot functions
+ * right when they start up instead of waiting for the timer
+ * to kick in.
+ */
+function setIntervalImmediately(func, interval) {
+  func();
+  return setInterval(func, interval);
+}
+
 @Injectable()
 export class DiscordBotManagerService {
   private readonly logger = new Logger(DiscordBotManagerService.name);
@@ -43,7 +54,7 @@ export class DiscordBotManagerService {
 
     // When the client is ready, immediately fetch the HBB staked.
     newDiscordClient.once("ready", () => {
-      setInterval(async () => {
+      setIntervalImmediately(async () => {
         this.logger.log("Cycling HBB staked bot.");
 
         try {
@@ -99,7 +110,7 @@ export class DiscordBotManagerService {
 
     // When the client is ready, immediately fetch the USDH deposited.
     newDiscordClient.once("ready", () => {
-      setInterval(async () => {
+      setIntervalImmediately(async () => {
         this.logger.log("Cycling USDH stability pool deposits bot.");
 
         try {
@@ -155,7 +166,7 @@ export class DiscordBotManagerService {
 
     // When the client is ready, immediately fetch the system LTV.
     newDiscordClient.once("ready", () => {
-      setInterval(async () => {
+      setIntervalImmediately(async () => {
         this.logger.log("Cycling System LTV bot.");
 
         try {
@@ -172,10 +183,20 @@ export class DiscordBotManagerService {
 
             if (absoluteLtv >= 0.64) {
               nicknameLabel += " 🟥";
-            } else if (absoluteLtv < 0.64 && absoluteLtv >= 0.585) {
+            } else if (absoluteLtv < 0.64 && absoluteLtv >= 0.595) {
               nicknameLabel += " 🟨";
-            } else if (absoluteLtv < 0.585) {
+            } else if (absoluteLtv < 0.595) {
               nicknameLabel += " 🟩";
+            }
+
+            let currentMode = "Normal";
+            if (absoluteLtv > 0.666) {
+              currentMode = "Recovery";
+            }
+
+            let currentLR = "90.9%";
+            if (currentMode === "Recovery") {
+              currentLR = "66.6%";
             }
 
             guild.me.setNickname(nicknameLabel);
@@ -183,7 +204,7 @@ export class DiscordBotManagerService {
               activities: [
                 {
                   type: "WATCHING",
-                  name: `${hubbleMetricsResponse.borrowing.loans.total} loans`
+                  name: `[${currentMode}] LR: ${currentLR}`
                 }
               ]
             });
@@ -214,7 +235,7 @@ export class DiscordBotManagerService {
 
     // When the client is ready, immediately fetch the asset price.
     newDiscordClient.once("ready", () => {
-      setInterval(async () => {
+      setIntervalImmediately(async () => {
         this.logger.log(`Cycling ${botEntity.assetSymbol} price bot.`);
 
         try {
