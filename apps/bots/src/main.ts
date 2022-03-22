@@ -8,6 +8,7 @@ async function bootstrap() {
   const port = process.env.PORT ?? 3006;
   console.log(`Starting server on port ${port}.`);
 
+  // For Railway support.
   await app.listen(port, "0.0.0.0");
 }
 
